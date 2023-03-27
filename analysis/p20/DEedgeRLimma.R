@@ -4,9 +4,10 @@ library(edgeR)
 
 options(stringsAsFactors = FALSE)
 
-setwd("/private/path/prjs/RAWDATA/P20")
+setwd(Sys.getenv("P20_DATA_DIR", unset = "."))
 rawdata <- read.table("P20_Annotated_Export_10032019.txt", header = TRUE, sep="\t")
-setwd("/private/path/prjs/Analysis/P20")
+## Individual-level data example omitted from the public repository.
+setwd(Sys.getenv("P20_DATA_DIR", unset = "."))
 
 # Find error symbols
 sort(rawdata[,1])[c(1:27)]

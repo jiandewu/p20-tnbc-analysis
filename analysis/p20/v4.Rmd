@@ -1,0 +1,92 @@
+---
+title: "P20 v4"
+output: html_notebook
+---
+
+<!-- Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*. -->
+```{r setup, include=FALSE, cache = FALSE}
+require("knitr")
+## setting working directory
+opts_knit$set(root.dir = Sys.getenv("P20_DATA_DIR", unset = "."))
+```
+
+```{r}
+options(stringsAsFactors = FALSE)
+library(data.table)
+pd <- fread("./v5.txt")
+#colnames(pd)
+table(pd$subtype,pd$RACE)
+```
+```{r}
+rawdata <- read.table("./258samples_v5.txt", header = TRUE, sep="\t")
+row.names(rawdata) <- rawdata[,1]
+rawdata <- rawdata[c(-2:-4,-6:-43),-1]
+```
+
+
+```{r}
+subtype <- 'UNS'
+subdata <- rawdata[c(-1),rawdata[1,] == subtype]
+dim(subdata)
+```
+
+```{r}
+library(edgeR)
+ge_data <- DGEList(counts = data.matrix(subdata[c(-1),]))
+racelevel <- subdata[1,]
+racelevel[racelevel=='Black'] = "AA"
+racelevel[racelevel=='White'] = "EA"
+race <- as.factor(racelevel)
+ge_data$samples$race <- race
+
+seqdepth_mean <- mean(ge_data$samples$lib.size) * 1e-6
+seqdepth_median <- median(ge_data$samples$lib.size) * 1e-6
+
+summary(ge_data$samples$lib.size * 1e-6)
+
+```
+```{r}
+nsamples <- ncol(ge_data)
+table(rowSums(ge_data$counts==0)==nsamples)
+```
+```{r}
+# Removing genes that are lowly expressed
+keep.exprs <- filterByExpr(ge_data, group=race)
+ge_data.unlowly <- ge_data[keep.exprs,, keep.lib.sizes=FALSE]
+dim(ge_data.unlowly)
+```
+```{r}
+# Normalising gene expression distributions
+ge_data.unlowly <- calcNormFactors(ge_data.unlowly, method = "TMM")
+lcpm <- cpm(ge_data.unlowly, log=TRUE)
+
+# design <- model.matrix(~0+group+race)
+design <- model.matrix(~0+race)
+colnames(design) <- gsub("race", "", colnames(design))
+contr.matrix <- makeContrasts(
+  AA.vs.EA = AA-EA, 
+  levels = colnames(design))
+contr.matrix
+```
+```{r}
+par(mfrow=c(1,2))
+v <- voom(ge_data.unlowly, design, plot=TRUE)
+vfit <- lmFit(v, design)
+vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
+efit <- eBayes(vfit)
+plotSA(efit, main="Final model: Mean-variance trend")
+dt <- decideTests(efit)
+summary(dt)
+```
+```{r}
+de.treat <- which(dt[,1]!=0)
+Ctrl.vs.Treat <- topTreat(efit, coef=1, n=Inf)
+significant.gene <- row.names(Ctrl.vs.Treat[Ctrl.vs.Treat$adj.P.Val<0.05,])
+up.gene <- row.names(Ctrl.vs.Treat[Ctrl.vs.Treat$adj.P.Val<0.05&Ctrl.vs.Treat$logFC>0,])
+down.gene <- row.names(Ctrl.vs.Treat[Ctrl.vs.Treat$adj.P.Val<0.05&Ctrl.vs.Treat$logFC<0,])
+up.gene
+down.gene
+```
+
+
+
