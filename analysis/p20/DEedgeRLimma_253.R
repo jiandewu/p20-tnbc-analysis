@@ -247,6 +247,9 @@ Ctrl.vs.Treat <- topTreat(efit, coef=1, n=Inf)
 significant.gene <- row.names(Ctrl.vs.Treat[Ctrl.vs.Treat$adj.P.Val<0.05,])
 significant.gene <- row.names(Ctrl.vs.Treat[Ctrl.vs.Treat$adj.P.Val<0.03,])
 
+cytoband <- read.table(Sys.getenv("CYTOBAND_FILE", unset = "cytoband.tsv"), header = TRUE, comment.char = "", quote = "", sep="\t")
+
+
 write.table(Ctrl.vs.Treat[Ctrl.vs.Treat$adj.P.Val<0.05,], file = paste("253/",prjname,".pval005.txt",sep = ""), sep="\t", quote = F, row.names=T)
 logFC.gene <- row.names(Ctrl.vs.Treat[(abs(Ctrl.vs.Treat$logFC)>1 | Ctrl.vs.Treat$adj.P.Val<0.05),])
 write.table(Ctrl.vs.Treat[abs(Ctrl.vs.Treat$logFC)>1,], file = paste("253/",prjname,".logFC1.txt",sep = ""), sep="\t", quote = F, row.names=T)
