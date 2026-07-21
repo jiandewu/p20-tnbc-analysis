@@ -1,0 +1,27 @@
+name: p20-tnbc-analysis
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - r-base=4.4
+  - pandoc
+
+  # Report and data tooling
+  - r-data.table
+  - r-dplyr
+  - r-knitr
+  - r-rmarkdown
+  - r-stringr
+
+  # Visualization
+  - r-ggplot2
+  - r-gplots
+  - r-pheatmap
+  - r-rcolorbrewer
+  - r-rgl
+
+  # Differential-expression analysis
+  - bioconductor-edger
+  - bioconductor-limma

@@ -1,0 +1,61 @@
+# R session and IDE state
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# Local environments and credentials
+renv/library/
+renv/staging/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Raw and controlled data
+data/
+raw_data/
+counts/
+clinical/
+**/DATA/
+**/raw/
+
+# Sequencing and genomics intermediates
+*.bam
+*.bai
+*.sam
+*.cram
+*.crai
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+
+# Generated results and reports
+results/
+output/
+outputs/
+**/tmp/
+*.Rout
+*.log
+*.nb.html
+*.html
+*.docx
+*.pdf
+~$*.docx
+~$*.xlsx
+
+# Private report locations
+analysis/p20/report/
+**/manuscript/
+private-documents/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*~
+*.swp
