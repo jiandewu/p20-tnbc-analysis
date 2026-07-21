@@ -61,11 +61,19 @@ results may be committed when appropriate.
 
 ## Portability status
 
-This is an initial history-preserving extraction. Most scripts still contain
-absolute paths under `/private/path/` and expect external count matrices,
-clinical annotations, reference genes, or helper AWK scripts. Those inputs must
-be represented by project-relative configuration before the analyses are
-considered portable or reproducible.
+The public history has been anonymized. Personal paths, host names, commit
+emails, internal sample identifiers, individual-level examples, and historical
+command-record files have been removed.
 
-Some `.shed` files are historical command records rather than directly
-executable shell scripts.
+The analysis scripts obtain private input locations from environment variables:
+
+- `P20_DATA_DIR`: directory containing controlled P20 input tables;
+- `BLIA_BLIS_DATA_DIR`: directory containing BLIA/BLIS inputs;
+- `OBESITY_DATA_DIR`: directory containing obesity-analysis inputs;
+- `CYTOBAND_FILE`: cytoband annotation file;
+- `P20_BILATERAL_EXCLUSIONS_FILE`: one controlled sample ID per line;
+- `P20_DISCORDANT_SAMPLES_FILE`: one controlled sample ID per line.
+
+Unset optional exclusion-list variables are treated as empty lists. These
+private files must remain outside the repository and in institutionally
+approved storage.

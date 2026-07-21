@@ -51,6 +51,8 @@ outputs/
 analysis/p20/report/
 **/manuscript/
 private-documents/
+config/private/
+private-config/
 
 # Editors and operating systems
 .vscode/
